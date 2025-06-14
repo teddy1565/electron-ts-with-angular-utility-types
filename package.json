@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/teddy1565/electron-ts-with-angular-utility-types/issues"
   },
-  "homepage": "https://github.com/teddy1565/electron-ts-with-angular-utility-types#readme"
+  "homepage": "https://github.com/teddy1565/electron-ts-with-angular-utility-types#readme",
+  "devDependencies": {
+    "@angular/core": "^20.0.3",
+    "electron": "^36.4.0",
+    "rxjs": "^7.8.2"
+  }
 }
