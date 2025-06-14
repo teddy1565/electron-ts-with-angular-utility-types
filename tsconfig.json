@@ -7,14 +7,17 @@
         "strict": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "skipLibCheck": true,
+        "skipLibCheck": false,
         "forceConsistentCasingInFileNames": true,
-        "allowJs": true
+        "allowJs": true,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true
     },
     "include": [
         "./src/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
     ]
 }
