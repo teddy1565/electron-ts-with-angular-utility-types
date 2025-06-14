@@ -1,0 +1,19 @@
+{
+  "name": "electron-ts-with-angular-utility-types",
+  "version": "1.0.0",
+  "description": "electron with angular utility types",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teddy1565/electron-ts-with-angular-utility-types.git"
+  },
+  "author": "teddy1565",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/teddy1565/electron-ts-with-angular-utility-types/issues"
+  },
+  "homepage": "https://github.com/teddy1565/electron-ts-with-angular-utility-types#readme"
+}
