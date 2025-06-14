@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/teddy1565/electron-ts-with-angular-utility-types#readme",
   "devDependencies": {
-    "electron": "^36.4.0"
+    "@angular/core": "^20.0.3",
+    "electron": "^36.4.0",
+    "rxjs": "^7.8.2"
   }
 }
