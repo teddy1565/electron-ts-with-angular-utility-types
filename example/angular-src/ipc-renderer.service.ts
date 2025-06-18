@@ -3,30 +3,32 @@ import { Injectable, OnInit, Inject, Optional } from "@angular/core";
 import { switchMap, distinctUntilChanged, catchError, map } from "rxjs/operators";
 import { forkJoin, of, takeUntil, ReplaySubject, Observable, lastValueFrom, from, mergeMap, share  } from "rxjs";
 
-import { IPCRenderer, Params, IPCValidChannel } from "../dist/ipc/ipc.model";
+import { IPCRenderer, Params } from "../shared-declare-types/ipc";
+import { IPCValidChannel } from "../shared-declare-types/ipc-valid-channel";
 
+// 定義全域的Window介面，讓TypeScript知道有ipcRenderer這個屬性
 declare global {
     interface Window {
-        ipcRenderer: IPCRenderer<IPCValidChannel<string>>;
+        ipcRenderer: IPCRenderer<IPCValidChannel>;
     }
 }
 
-@Injectable({
+({
     providedIn: "root"
 })
 
-export class IPCRendererService<L extends string = string> {
+export class IPCRendererService {
 
     private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-    private readonly receive_map: Map<IPCValidChannel<L>, Observable<any>> = new Map<IPCValidChannel<L>, Observable<any>>();
+    private readonly receive_map: Map<IPCValidChannel, Observable<any>> = new Map<IPCValidChannel, Observable<any>>();
 
     constructor() {
-
+        console.info("[IPCRendererService.constructor]IPCRendererService constructed.");
     }
 
-    public send<T=never|undefined>(channel: IPCValidChannel<L>): void;
-    public send<T extends any[]>(channel: IPCValidChannel<L>, ...data: T): void;
+    public send<T=never|undefined>(channel: IPCValidChannel): void;
+    public send<T extends any[]>(channel: IPCValidChannel, ...data: T): void;
     public send<T extends any[]>(...args: T): void {
         // eslint-disable-next-line no-undef
         if (window.ipcRenderer && window.ipcRenderer.send) {
@@ -44,7 +46,7 @@ export class IPCRendererService<L extends string = string> {
         }
     }
 
-    public invoke<P extends any[], R>(channel: IPCValidChannel<L>, ...args: P): Promise<R> {
+    public invoke<P extends any[], R>(channel: IPCValidChannel, ...args: P): Promise<R> {
         return new Promise((resolve, reject) => {
             // eslint-disable-next-line no-undef
             if (window.ipcRenderer && window.ipcRenderer.invoke) {
@@ -55,13 +57,13 @@ export class IPCRendererService<L extends string = string> {
                     reject(error);
                 });
             } else {
-                console.error(`[IPCRendererService.invoke] Invalid IPC channel: ${channel}`);
-                return reject(new Error(`[IPCRendererService.invoke] Invalid IPC channel: ${channel}`));
+                console.error(`[IPCRendererService.invoke]Invalid IPC channel: ${channel}`);
+                return reject(new Error(`[IPCRendererService.invoke]Invalid IPC channel: ${channel}`));
             }
         });
     }
 
-    public receive<T>(channel: IPCValidChannel<L>): Observable<T> {
+    public receive<T>(channel: IPCValidChannel): Observable<T> {
         if (this.receive_map.has(channel)) {
             return this.receive_map.get(channel) as Observable<T>;
         }
@@ -73,18 +75,15 @@ export class IPCRendererService<L extends string = string> {
                     subscriber.next(data);
                 });
             } else {
-                console.error(`[IPCRendererService.receive] Invalid IPC channel: ${channel}`);
-                subscriber.error(new Error(`[IPCRendererService.receive] Invalid IPC channel: ${channel}`));
+                console.error(`[IPCRendererService.receive]Invalid IPC channel: ${channel}`);
+                subscriber.error(new Error(`[IPCRendererService.receive]Invalid IPC channel: ${channel}`));
             }
         })).pipe<T>(share<any>());
 
 
 
         this.receive_map.set(channel, observable);
-        /**
-         * 這裡subscribe是為了讓observable開始監聽channel，否則不會有任何反應
-         * 而且好像至少需要先subscribe至少一次，才能觸發share機制，否則好像會變成多個observable
-         */
+
         observable.subscribe((data) => {
         });
 
